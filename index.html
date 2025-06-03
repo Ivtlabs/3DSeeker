@@ -135,7 +135,7 @@
             resolve(text); // fallback para o termo original
           }, timeout);
 
-          fetch("https://libretranslate.de/translate", {
+          fetch("https://translate.argosopentech.com/translate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
