@@ -4,13 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Busca Multisite de Modelos 3D</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       padding: 30px;
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
     }
     h2 {
@@ -21,15 +20,43 @@
       width: 100%;
       padding: 10px;
       margin-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
       font-size: 16px;
     }
+    #translateOption {
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .sort-buttons {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .sort-buttons button {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #007BFF;
+      background-color: white;
+      color: #007BFF;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .sort-buttons button.active,
+    .sort-buttons button:hover {
+      background-color: #007BFF;
+      color: white;
+    }
     .checkbox-group {
       display: flex;
+      justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 15px;
       margin-bottom: 20px;
     }
     .checkbox-group label {
@@ -37,7 +64,7 @@
       align-items: center;
       gap: 5px;
     }
-    button {
+    #searchBtn {
       width: 100%;
       padding: 12px;
       font-size: 16px;
@@ -47,42 +74,165 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
+    #searchBtn:hover {
       background-color: #0056b3;
+    }
+    #loadingIndicator {
+      display: none;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #333;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+
   <h2>🔍 Busca Multisite de Modelos 3D</h2>
-  <input type="text" id="searchTerm" placeholder="Digite o que você procura...">
+
+  <input type="text" id="searchTerm" placeholder="Digite em inglês para melhores resultados ou ative a opção de tradução automática">
+
+  <div id="translateOption">
+    <label>
+      <input type="checkbox" id="translateToEnglish">
+      Traduzir automaticamente do português para o inglês
+    </label>
+  </div>
+
+  <div class="sort-buttons">
+    <button id="sort-relevancia" class="active">Relevância</button>
+    <button id="sort-popular">Likes</button>
+    <button id="sort-downloads">Downloads</button>
+    <button id="sort-recent">Recentes</button>
+  </div>
+
   <div class="checkbox-group">
     <label><input type="checkbox" checked id="printables">Printables</label>
     <label><input type="checkbox" checked id="thingiverse">Thingiverse</label>
     <label><input type="checkbox" checked id="cults">Cults3D</label>
     <label><input type="checkbox" checked id="thangs">Thangs</label>
     <label><input type="checkbox" checked id="makerworld">MakerWorld</label>
-    <label><input type="checkbox" checked id="yeggi">Yeggi</label>
   </div>
+
   <button id="searchBtn">Pesquisar</button>
+  <div id="loadingIndicator"></div>
+
   <script>
-    document.getElementById("searchBtn").addEventListener("click", function () {
-      const termo = document.getElementById("searchTerm").value.trim();
-      if (!termo) return;
-      const q = encodeURIComponent(termo);
-      const sites = {
-        printables: `https://www.printables.com/search/models?q=${q}`,
-        thingiverse: `https://www.thingiverse.com/search?q=${q}`,
-        cults: `https://cults3d.com/en/search?q=${q}`,
-        thangs: `https://www.thangs.com/search/${q}`,
-        makerworld: `https://makerworld.com/search?q=${q}`,
-        yeggi: `https://www.yeggi.com/q/${q}/`
-      };
-      for (const [id, url] of Object.entries(sites)) {
-        if (document.getElementById(id).checked) {
-          window.open(url, '_blank');
-        }
+    document.addEventListener("DOMContentLoaded", function () {
+      let currentSort = "relevancia";
+
+      document.querySelectorAll(".sort-buttons button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".sort-buttons button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentSort = btn.id.replace("sort-", "");
+        });
+      });
+
+      async function translateWithTimeout(text, timeout = 5000) {
+        return new Promise((resolve) => {
+          const timer = setTimeout(() => {
+            resolve(text); // fallback para o termo original
+          }, timeout);
+
+          fetch("https://libretranslate.de/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              q: text,
+              source: "pt",
+              target: "en",
+              format: "text"
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            clearTimeout(timer);
+            resolve(data.translatedText || text);
+          })
+          .catch(err => {
+            console.warn("Erro na tradução:", err);
+            clearTimeout(timer);
+            resolve(text);
+          });
+        });
       }
+
+      document.getElementById("searchBtn").addEventListener("click", async function () {
+        const input = document.getElementById("searchTerm");
+        let termo = input.value.trim();
+        if (!termo) return;
+
+        const traduzir = document.getElementById("translateToEnglish").checked;
+        const searchBtn = document.getElementById("searchBtn");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+
+        if (traduzir) {
+          let seconds = 0;
+          loadingIndicator.style.display = "block";
+          loadingIndicator.textContent = `Traduzindo... (${seconds}s)`;
+
+          const interval = setInterval(() => {
+            seconds++;
+            loadingIndicator.textContent = `Traduzindo... (${seconds}s)`;
+          }, 1000);
+
+          searchBtn.disabled = true;
+          const traduzido = await translateWithTimeout(termo, 5000);
+    if (traduzido && traduzido !== termo) {
+      console.log("Tradução aplicada:", traduzido);
+      termo = traduzido;
+    } else {
+      console.warn("Tradução não foi aplicada. Usando termo original:", termo);
+    }
+          clearInterval(interval);
+          loadingIndicator.style.display = "none";
+          searchBtn.disabled = false;
+        }
+
+        const q = encodeURIComponent(termo);
+
+        const urls = {
+          printables: {
+            relevancia: `https://www.printables.com/search/models?q=${q}`,
+            popular: `https://www.printables.com/search/models?q=${q}&ordering=popular`,
+            downloads: `https://www.printables.com/search/models?q=${q}&ordering=makes_count`,
+            recent: `https://www.printables.com/search/models?q=${q}&ordering=latest`
+          },
+          thingiverse: {
+            relevancia: `https://www.thingiverse.com/search?q=${q}`,
+            popular: `https://www.thingiverse.com/search?q=${q}&page=1&sort=popular`,
+            downloads: `https://www.thingiverse.com/search?q=${q}&page=1&sort=makes`,
+            recent: `https://www.thingiverse.com/search?q=${q}&page=1&sort=newest`
+          },
+          cults: {
+            relevancia: `https://cults3d.com/en/search?q=${q}`,
+            popular: `https://cults3d.com/en/search?q=${q}&sort=likes_counter`,
+            downloads: `https://cults3d.com/en/search?q=${q}&sort=downloads_count`,
+            recent: `https://cults3d.com/en/search?q=${q}&sort=created_at`
+          },
+          thangs: {
+            relevancia: `https://thangs.com/search/${q}`,
+            popular: `https://thangs.com/search/${q}?scope=all&sort=nLikes`,
+            downloads: `https://thangs.com/search/${q}?scope=all&sort=nDownloads`,
+            recent: `https://thangs.com/search/${q}?scope=all&sort=nPublishedOn`
+          },
+          makerworld: {
+            relevancia: `https://makerworld.com/pt/search/models?keyword=${q}`,
+            popular: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=likeCount`,
+            downloads: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=downloadCount`,
+            recent: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=newUploads`
+          }
+        };
+
+        for (const id in urls) {
+          if (document.getElementById(id).checked) {
+            window.open(urls[id][currentSort], '_blank');
+          }
+        }
+      });
     });
   </script>
+
 </body>
 </html>
