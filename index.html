@@ -87,7 +87,11 @@
 
   <h2>🔍 Busca Multisite de Modelos 3D</h2>
 
-  <input type="text" id="searchTerm" placeholder="Digite o que você procura...">
+  
+<p style="color: red; font-weight: bold;">
+  ⚠️ Este site abre os resultados em novas abas. Certifique-se de permitir pop-ups no seu navegador.
+</p>
+<input type="text" id="searchTerm" placeholder="Digite o que você procura...">
 
   <div class="sort-buttons">
     <button id="sort-relevancia" class="active">Relevância</button>
@@ -97,11 +101,12 @@
   </div>
 
   <div class="checkbox-group">
-    <label><input type="checkbox" checked id="printables">Printables</label>
     <label><input type="checkbox" checked id="thingiverse">Thingiverse</label>
+    <label><input type="checkbox" checked id="printables">Printables</label>
+    <label><input type="checkbox" checked id="makerworld">MakerWorld</label>
     <label><input type="checkbox" checked id="cults">Cults3D</label>
     <label><input type="checkbox" checked id="thangs">Thangs</label>
-    <label><input type="checkbox" checked id="makerworld">MakerWorld</label>
+    
   </div>
 
   <button id="searchBtn">Pesquisar</button>
@@ -123,6 +128,24 @@
       const q = encodeURIComponent(termo);
 
       const urls = {
+	thangs: {
+          relevancia: `https://thangs.com/search/${q}`,
+          popular: `https://thangs.com/search/${q}?scope=all&sort=nLikes`,
+          downloads: `https://thangs.com/search/${q}?scope=all&sort=nDownloads`,
+          recent: `https://thangs.com/search/${q}?scope=all&sort=nPublishedOn`
+        },
+ 	cults: {
+          relevancia: `https://cults3d.com/en/search?q=${q}`,
+          popular: `https://cults3d.com/en/search?q=${q}&sort=likes_counter`,
+          downloads: `https://cults3d.com/en/search?q=${q}&sort=downloads_count`,
+          recent: `https://cults3d.com/en/search?q=${q}&sort=created_at`
+        },
+	makerworld: {
+          relevancia: `https://makerworld.com/pt/search/models?keyword=${q}`,
+          popular: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=likeCount`,
+          downloads: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=downloadCount`,
+          recent: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=newUploads`
+        },
         printables: {
           relevancia: `https://www.printables.com/search/models?q=${q}`,
           popular: `https://www.printables.com/search/models?q=${q}&ordering=popular`,
@@ -134,25 +157,9 @@
           popular: `https://www.thingiverse.com/search?q=${q}&page=1&sort=popular`,
           downloads: `https://www.thingiverse.com/search?q=${q}&page=1&sort=makes`,
           recent: `https://www.thingiverse.com/search?q=${q}&page=1&sort=newest`
-        },
-        cults: {
-          relevancia: `https://cults3d.com/en/search?q=${q}`,
-          popular: `https://cults3d.com/en/search?q=${q}&sort=likes_counter`,
-          downloads: `https://cults3d.com/en/search?q=${q}&sort=downloads_count`,
-          recent: `https://cults3d.com/en/search?q=${q}&sort=created_at`
-        },
-        thangs: {
-          relevancia: `https://thangs.com/search/${q}`,
-          popular: `https://thangs.com/search/${q}?scope=all&sort=nLikes`,
-          downloads: `https://thangs.com/search/${q}?scope=all&sort=nDownloads`,
-          recent: `https://thangs.com/search/${q}?scope=all&sort=nPublishedOn`
-        },
-        makerworld: {
-          relevancia: `https://makerworld.com/pt/search/models?keyword=${q}`,
-          popular: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=likeCount`,
-          downloads: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=downloadCount`,
-          recent: `https://makerworld.com/pt/search/models?keyword=${q}&orderBy=newUploads`
         }
+        
+        
       };
 
       for (const id in urls) {
@@ -161,7 +168,36 @@
         }
       }
     });
-  </script>
+  
+function copiarLinks() {
+  const termo = document.getElementById("busca").value.trim();
+  if (!termo) return;
+
+  const urls = {
+    padrao: [
+      `https://www.thingiverse.com/search?q=${termo}&page=1`,
+      `https://www.printables.com/search/models?q=${termo}`,
+      `https://makerworld.com/pt/search/models?keyword=${termo}`,
+      `https://cults3d.com/en/search?q=${termo}`,
+      `https://thangs.com/search/${termo}?scope=all`],
+    likes: [
+      `https://www.thingiverse.com/search?q=${termo}&page=1&sort=popular`,
+      `https://www.printables.com/search/models?q=${termo}&ordering=popular`,
+      `https://makerworld.com/pt/search/models?keyword=${termo}&orderBy=likeCount`,
+      `https://cults3d.com/en/search?q=${termo}&sort=likes_counter`,
+      `https://thangs.com/search/${termo}?scope=all&sort=nLikes`],
+    downloads: [
+      `https://www.thingiverse.com/search?q=${termo}&page=1&sort=makes`,
+      `https://www.printables.com/search/models?q=${termo}&ordering=makes_count`,
+      `https://makerworld.com/pt/search/models?keyword=${termo}&orderBy=downloadCount`,
+      `https://cults3d.com/en/search?q=${termo}&sort=downloads_count`,
+      `https://thangs.com/search/${termo}?scope=all&sort=nDownloads`]
+  };
+
+  const lista = urls[ordenacao].map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('');
+  document.getElementById("linksGerados").innerHTML = `<ul>${lista}</ul>`;
+}
+</script>
 
 </body>
 </html>
