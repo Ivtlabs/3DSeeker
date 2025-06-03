@@ -1,2 +1,3 @@
-# buscador-3d
-Buscador de modelos 3D em múltiplos sites
+# Buscador 3D
+
+Ferramenta simples para buscar modelos 3D em vários sites de uma só vez.

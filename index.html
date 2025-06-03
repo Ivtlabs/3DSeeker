@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Busca Multisite de Modelos 3D</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔍 Busca Multisite de Modelos 3D</h2>
+  <input type="text" id="searchTerm" placeholder="Digite o que você procura...">
+  <div class="checkbox-group">
+    <label><input type="checkbox" checked id="printables">Printables</label>
+    <label><input type="checkbox" checked id="thingiverse">Thingiverse</label>
+    <label><input type="checkbox" checked id="cults">Cults3D</label>
+    <label><input type="checkbox" checked id="thangs">Thangs</label>
+    <label><input type="checkbox" checked id="makerworld">MakerWorld</label>
+    <label><input type="checkbox" checked id="yeggi">Yeggi</label>
+  </div>
+  <button id="searchBtn">Pesquisar</button>
+  <script>
+    document.getElementById("searchBtn").addEventListener("click", function () {
+      const termo = document.getElementById("searchTerm").value.trim();
+      if (!termo) return;
+      const q = encodeURIComponent(termo);
+      const sites = {
+        printables: `https://www.printables.com/search/models?q=${q}`,
+        thingiverse: `https://www.thingiverse.com/search?q=${q}`,
+        cults: `https://cults3d.com/en/search?q=${q}`,
+        thangs: `https://www.thangs.com/search/${q}`,
+        makerworld: `https://makerworld.com/search?q=${q}`,
+        yeggi: `https://www.yeggi.com/q/${q}/`
+      };
+      for (const [id, url] of Object.entries(sites)) {
+        if (document.getElementById(id).checked) {
+          window.open(url, '_blank');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
