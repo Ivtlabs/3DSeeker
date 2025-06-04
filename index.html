@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-	
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8CY66G92ZH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
+ <head>
+  <!-- Google tag (gtag.js) -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8CY66G92ZH">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-8CY66G92ZH');
-</script>
-
-  <meta charset="UTF-8">
-  <title>3D Model Search</title>
+  </script>
+  <meta charset="utf-8"/>
+  <title>
+   3DSeeker - Free 3D Model Search Tool
+  </title>
   <style>
-    body {
+   body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       padding: 30px;
@@ -93,37 +94,61 @@
       background-color: #0056b3;
     }
   </style>
-</head>
-<body>
-
-  <h2>🔍 3D Model Search</h2>
-
-  
-<p style="color: red; font-weight: bold;">
-  ⚠️ This site opens results in new tabs. Make sure to allow pop-ups in your browser.
-</p>
-<input type="text" id="searchTerm" placeholder="Type what you are looking for...">
-
+  <meta content="Find and compare 3D models across multiple platforms with 3DSeeker. One search, all results." name="description"/>
+  <meta content="3D models, STL search, Thingiverse, Printables, Cults3D, Thangs, MakerWorld, CAD, download, 3DSeeker" name="keywords"/>
+  <meta content="3DSeeker" name="author"/>
+  <meta content="index, follow" name="robots"/>
+  <link href="https://ivtlabs.github.io/buscador-3d/" rel="canonical"/>
+ </head>
+ <body>
+  <h2>
+   🔍 3DSeeker - Search Free 3D Models
+  </h2>
+  <p style="color: red; font-weight: bold;">
+   ⚠️ This site opens results in new tabs. Make sure to allow pop-ups in your browser.
+  </p>
+  <input id="searchTerm" placeholder="Type what you are looking for..." type="text"/>
   <div class="sort-buttons">
-    <button id="sort-relevancia" class="active">Relevance</button>
-    <button id="sort-popular">Likes</button>
-    <button id="sort-downloads">Downloads</button>
-    <button id="sort-recent">Recents</button>
+   <button class="active" id="sort-relevancia">
+    Relevance
+   </button>
+   <button id="sort-popular">
+    Likes
+   </button>
+   <button id="sort-downloads">
+    Downloads
+   </button>
+   <button id="sort-recent">
+    Recents
+   </button>
   </div>
-
   <div class="checkbox-group">
-    <label><input type="checkbox" checked id="thingiverse">Thingiverse</label>
-    <label><input type="checkbox" checked id="printables">Printables</label>
-    <label><input type="checkbox" checked id="makerworld">MakerWorld</label>
-    <label><input type="checkbox" checked id="cults">Cults3D</label>
-    <label><input type="checkbox" checked id="thangs">Thangs</label>
-    
+   <label>
+    <input checked="" id="thingiverse" type="checkbox"/>
+    Thingiverse
+   </label>
+   <label>
+    <input checked="" id="printables" type="checkbox"/>
+    Printables
+   </label>
+   <label>
+    <input checked="" id="makerworld" type="checkbox"/>
+    MakerWorld
+   </label>
+   <label>
+    <input checked="" id="cults" type="checkbox"/>
+    Cults3D
+   </label>
+   <label>
+    <input checked="" id="thangs" type="checkbox"/>
+    Thangs
+   </label>
   </div>
-
-  <button id="searchBtn">Search</button>
-
+  <button id="searchBtn">
+   Search
+  </button>
   <script>
-    let currentSort = "relevancia";
+   let currentSort = "relevancia";
 
     document.querySelectorAll(".sort-buttons button").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -208,7 +233,6 @@ function copiarLinks() {
   const lista = urls[ordenacao].map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('');
   document.getElementById("linksGerados").innerHTML = `<ul>${lista}</ul>`;
 }
-</script>
-
-</body>
+  </script>
+ </body>
 </html>
