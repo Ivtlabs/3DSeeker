@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ivtlabs.github.io/3DSeeker/sitemap.xml
