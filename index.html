@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+	
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8CY66G92ZH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8CY66G92ZH');
+</script>
+
   <meta charset="UTF-8">
-  <title>Busca Multisite de Modelos 3D</title>
+  <title>3D Model Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -89,15 +100,15 @@
 
   
 <p style="color: red; font-weight: bold;">
-  ⚠️ Este site abre os resultados em novas abas. Certifique-se de permitir pop-ups no seu navegador.
+  ⚠️ This site opens results in new tabs. Make sure to allow pop-ups in your browser.
 </p>
-<input type="text" id="searchTerm" placeholder="Digite o que você procura...">
+<input type="text" id="searchTerm" placeholder="Type what you are looking for...">
 
   <div class="sort-buttons">
-    <button id="sort-relevancia" class="active">Relevância</button>
+    <button id="sort-relevancia" class="active">Relevance</button>
     <button id="sort-popular">Likes</button>
     <button id="sort-downloads">Downloads</button>
-    <button id="sort-recent">Recentes</button>
+    <button id="sort-recent">Recents</button>
   </div>
 
   <div class="checkbox-group">
@@ -109,7 +120,7 @@
     
   </div>
 
-  <button id="searchBtn">Pesquisar</button>
+  <button id="searchBtn">Search</button>
 
   <script>
     let currentSort = "relevancia";
